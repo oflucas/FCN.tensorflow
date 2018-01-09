@@ -19,7 +19,7 @@ tf.flags.DEFINE_string('mode', "train", "Mode train/ test/ visualize")
 
 MODEL_URL = 'http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat'
 
-MAX_ITERATION = int(1e5 + 1)
+MAX_ITERATION = int(2e5 + 1)
 NUM_OF_CLASSESS = 151
 IMAGE_SIZE = 224
 
@@ -125,9 +125,9 @@ def inference(image, keep_prob):
         b_t3 = utils.bias_variable([NUM_OF_CLASSESS], name="b_t3")
         conv_t3 = utils.conv2d_transpose_strided(fuse_2, W_t3, b_t3, output_shape=deconv_shape3, stride=8)
 
-        annotation_pred = tf.argmax(conv_t3, dimension=3, name="prediction")
+        annotation_pred = tf.argmax(conv_t3, axis=3, name="prediction")
 
-    return tf.expand_dims(annotation_pred, dim=3), conv_t3
+    return tf.expand_dims(annotation_pred, axis=3), conv_t3
 
 
 def train(loss_val, var_list):
@@ -153,6 +153,10 @@ def main(argv=None):
                                                                           labels=tf.squeeze(annotation, squeeze_dims=[3]),
                                                                           name="entropy")))
     tf.summary.scalar("entropy", loss)
+    mean_acc = tf.reduce_mean(tf.metrics.accuracy(annotation, pred_annotation, name='ACC'))
+    tf.summary.scalar("ACC", mean_acc)
+    #mean_iou = tf.metrics.mean_iou(annotation, pred_annotation, NUM_OF_CLASSESS, name='mIOU')
+    #tf.summary.scalar("mIOU", mean_iou)
 
     trainable_var = tf.trainable_variables()
     if FLAGS.debug:
@@ -181,6 +185,8 @@ def main(argv=None):
     summary_writer = tf.summary.FileWriter(FLAGS.logs_dir, sess.graph)
 
     sess.run(tf.global_variables_initializer())
+    sess.run(tf.local_variables_initializer())
+
     ckpt = tf.train.get_checkpoint_state(FLAGS.logs_dir)
     if ckpt and ckpt.model_checkpoint_path:
         saver.restore(sess, ckpt.model_checkpoint_path)
@@ -200,15 +206,16 @@ def main(argv=None):
 
             if itr % 500 == 0:
                 valid_images, valid_annotations = validation_dataset_reader.next_batch(FLAGS.batch_size)
-                valid_loss = sess.run(loss, feed_dict={image: valid_images, annotation: valid_annotations,
+                valid_loss, acc = sess.run([loss, mean_acc], feed_dict={image: valid_images, annotation: valid_annotations,
                                                        keep_probability: 1.0})
-                print("%s ---> Validation_loss: %g" % (datetime.datetime.now(), valid_loss))
+                print("%s ---> Validation_loss: %g, ACC: %g" % (datetime.datetime.now(), valid_loss, acc))
                 saver.save(sess, FLAGS.logs_dir + "model.ckpt", itr)
 
     elif FLAGS.mode == "visualize":
         valid_images, valid_annotations = validation_dataset_reader.get_random_batch(FLAGS.batch_size)
-        pred = sess.run(pred_annotation, feed_dict={image: valid_images, annotation: valid_annotations,
+        valid_loss, pred = sess.run([loss, pred_annotation], feed_dict={image: valid_images, annotation: valid_annotations,
                                                     keep_probability: 1.0})
+        print("%s ---> Validation_loss: %g" % (datetime.datetime.now(), valid_loss))
         valid_annotations = np.squeeze(valid_annotations, axis=3)
         pred = np.squeeze(pred, axis=3)
 
@@ -217,7 +224,8 @@ def main(argv=None):
             utils.save_image(valid_annotations[itr].astype(np.uint8), FLAGS.logs_dir, name="gt_" + str(5+itr))
             utils.save_image(pred[itr].astype(np.uint8), FLAGS.logs_dir, name="pred_" + str(5+itr))
             print("Saved image: %d" % itr)
-
+            print(valid_annotations[itr].astype(np.uint8))
+            print(pred[itr].astype(np.uint8))
 
 if __name__ == "__main__":
     tf.app.run()
