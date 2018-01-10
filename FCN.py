@@ -4,6 +4,7 @@ import numpy as np
 
 import TensorflowUtils as utils
 import read_MITSceneParsingData as scene_parsing
+import read_KittiData as kitti_data
 import datetime
 import BatchDatsetReader as dataset
 from six.moves import xrange
@@ -20,8 +21,8 @@ tf.flags.DEFINE_string('mode', "train", "Mode train/ test/ visualize")
 MODEL_URL = 'http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat'
 
 MAX_ITERATION = int(2e5 + 1)
-NUM_OF_CLASSESS = 151
-IMAGE_SIZE = 224
+NUM_OF_CLASSESS = 2 # MIT-SP 151
+IMAGE_SIZE = 224 # MIT-SP 224
 
 
 def vgg_net(weights, image):
@@ -168,7 +169,7 @@ def main(argv=None):
     summary_op = tf.summary.merge_all()
 
     print("Setting up image reader...")
-    train_records, valid_records = scene_parsing.read_dataset(FLAGS.data_dir)
+    train_records, valid_records = kitti_data.read_dataset() #scene_parsing.read_dataset(FLAGS.data_dir)
     print(len(train_records))
     print(len(valid_records))
 
