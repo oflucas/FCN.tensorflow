@@ -190,7 +190,7 @@ def main(argv=None):
     ckpt = tf.train.get_checkpoint_state(FLAGS.logs_dir)
     if ckpt and ckpt.model_checkpoint_path:
         saver.restore(sess, ckpt.model_checkpoint_path)
-        print("Model restored...")
+        print("Model restored...", ckpt.model_checkpoint_path)
 
     if FLAGS.mode == "train":
         for itr in xrange(MAX_ITERATION):
@@ -213,19 +213,17 @@ def main(argv=None):
 
     elif FLAGS.mode == "visualize":
         valid_images, valid_annotations = validation_dataset_reader.get_random_batch(FLAGS.batch_size)
-        valid_loss, pred = sess.run([loss, pred_annotation], feed_dict={image: valid_images, annotation: valid_annotations,
+        valid_loss, acc, pred = sess.run([loss, mean_acc, pred_annotation], feed_dict={image: valid_images, annotation: valid_annotations,
                                                     keep_probability: 1.0})
-        print("%s ---> Validation_loss: %g" % (datetime.datetime.now(), valid_loss))
+        print("%s ---> Validation_loss: %g, ACC: %g" % (datetime.datetime.now(), valid_loss, acc))
         valid_annotations = np.squeeze(valid_annotations, axis=3)
         pred = np.squeeze(pred, axis=3)
 
         for itr in range(FLAGS.batch_size):
-            utils.save_image(valid_images[itr].astype(np.uint8), FLAGS.logs_dir, name="inp_" + str(5+itr))
-            utils.save_image(valid_annotations[itr].astype(np.uint8), FLAGS.logs_dir, name="gt_" + str(5+itr))
-            utils.save_image(pred[itr].astype(np.uint8), FLAGS.logs_dir, name="pred_" + str(5+itr))
+            utils.save_image(valid_images[itr].astype(np.uint8), FLAGS.logs_dir, name="inp_" + str(itr))
+            utils.save_image(valid_annotations[itr].astype(np.uint8), FLAGS.logs_dir, name="gt_" + str(itr))
+            utils.save_image(pred[itr].astype(np.uint8), FLAGS.logs_dir, name="pred_" + str(itr))
             print("Saved image: %d" % itr)
-            print(valid_annotations[itr].astype(np.uint8))
-            print(pred[itr].astype(np.uint8))
 
 if __name__ == "__main__":
     tf.app.run()
