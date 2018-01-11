@@ -22,11 +22,11 @@ tf.flags.DEFINE_string('mode', "train", "Mode train/ test/ visualize")
 MODEL_URL = 'http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat'
 
 MAX_ITERATION = int(2e5 + 1)
-NUM_OF_CLASSESS = 2 # MIT-SP 151
+NUM_OF_CLASSES = 2 # MIT-SP 151
 IMAGE_SIZE = None # MIT-SP 224
 
 
-def vgg_net(weights, image):
+def vgg_net(weights, image, end_layer=None):
     layers = (
         'conv1_1', 'relu1_1', 'conv1_2', 'relu1_2', 'pool1',
 
@@ -61,6 +61,9 @@ def vgg_net(weights, image):
             current = utils.avg_pool_2x2(current)
         net[name] = current
 
+        if end_layer is not None and end_layer == name:
+            break
+
     return net
 
 
@@ -82,54 +85,29 @@ def inference(image, keep_prob):
     processed_image = utils.process_image(image, mean_pixel)
 
     with tf.variable_scope("inference"):
-        image_net = vgg_net(weights, processed_image)
-        conv_final_layer = image_net["conv5_3"]
+        vgg_end_layer = 'conv4_4'
+        image_net = vgg_net(weights, processed_image, end_layer=vgg_end_layer)
+        conv_final_layer = image_net[vgg_end_layer]
 
-        # pool5 = utils.max_pool_2x2(conv_final_layer)
-
-        # W6 = utils.weight_variable([7, 7, 512, 4096], name="W6")
-        # b6 = utils.bias_variable([4096], name="b6")
-        # conv6 = utils.conv2d_basic(pool5, W6, b6)
-        # relu6 = tf.nn.relu(conv6, name="relu6")
-        # if FLAGS.debug:
-        #     utils.add_activation_summary(relu6)
-        # relu_dropout6 = tf.nn.dropout(relu6, keep_prob=keep_prob)
-
-        # W7 = utils.weight_variable([1, 1, 4096, 4096], name="W7")
-        # b7 = utils.bias_variable([4096], name="b7")
-        # conv7 = utils.conv2d_basic(relu_dropout6, W7, b7)
-        # relu7 = tf.nn.relu(conv7, name="relu7")
-        # if FLAGS.debug:
-        #     utils.add_activation_summary(relu7)
-        # relu_dropout7 = tf.nn.dropout(relu7, keep_prob=keep_prob)
-
-        # W8 = utils.weight_variable([1, 1, 4096, NUM_OF_CLASSESS], name="W8")
-        # b8 = utils.bias_variable([NUM_OF_CLASSESS], name="b8")
-        # conv8 = utils.conv2d_basic(relu_dropout7, W8, b8)
-        # # annotation_pred1 = tf.argmax(conv8, dimension=3, name="prediction1")
-
-        # # now to upscale to actual image size
-        # deconv_shape1 = image_net["pool4"].get_shape()
-        # W_t1 = utils.weight_variable([4, 4, deconv_shape1[3].value, NUM_OF_CLASSESS], name="W_t1")
-        # b_t1 = utils.bias_variable([deconv_shape1[3].value], name="b_t1")
-        # conv_t1 = utils.conv2d_transpose_strided(conv8, W_t1, b_t1, output_shape=tf.shape(image_net["pool4"]))
-        # fuse_1 = tf.add(conv_t1, image_net["pool4"], name="fuse_1")
+        dropout = tf.nn.dropout(conv_final_layer, keep_prob=keep_prob)
+        W_final = utils.weight_variable([1, 1, 512, NUM_OF_CLASSES], name="W_final")
+        b_final = utils.bias_variable([NUM_OF_CLASSES], name="b_final")
+        conv_final = utils.conv2d_basic(dropout, W_final, b_final)
+        if FLAGS.debug:
+            utils.add_activation_summary(conv_final)
 
         # now to upscale to actual image size
-        concat = tf.concat([conv_final_layer, image_net["pool4"]], axis=3, name='concat')
-        concat_shape = concat.get_shape()
-
-        deconv_shape2 = image_net["pool3"].get_shape()
-        W_t2 = utils.weight_variable([4, 4, deconv_shape2[3].value, concat_shape[3].value], name="W_t2") # why 4x4?
+        deconv_shape2 = image_net["pool2"].get_shape()
+        W_t2 = utils.weight_variable([4, 4, deconv_shape2[3].value, NUM_OF_CLASSES], name="W_t2")
         b_t2 = utils.bias_variable([deconv_shape2[3].value], name="b_t2")
-        conv_t2 = utils.conv2d_transpose_strided(concat, W_t2, b_t2, output_shape=tf.shape(image_net["pool3"]))
-        fuse_2 = tf.add(conv_t2, image_net["pool3"], name="fuse_2")
+        conv_t2 = utils.conv2d_transpose_strided(conv_final, W_t2, b_t2, output_shape=tf.shape(image_net["pool2"]))
+        fuse_2 = tf.add(conv_t2, image_net["pool2"], name="fuse_2")
 
         shape = tf.shape(image)
-        deconv_shape3 = tf.stack([shape[0], shape[1], shape[2], NUM_OF_CLASSESS])
-        W_t3 = utils.weight_variable([16, 16, NUM_OF_CLASSESS, deconv_shape2[3].value], name="W_t3")
-        b_t3 = utils.bias_variable([NUM_OF_CLASSESS], name="b_t3")
-        conv_t3 = utils.conv2d_transpose_strided(fuse_2, W_t3, b_t3, output_shape=deconv_shape3, stride=8)
+        deconv_shape3 = tf.stack([shape[0], shape[1], shape[2], NUM_OF_CLASSES])
+        W_t3 = utils.weight_variable([8, 8, NUM_OF_CLASSES, deconv_shape2[3].value], name="W_t3")
+        b_t3 = utils.bias_variable([NUM_OF_CLASSES], name="b_t3")
+        conv_t3 = utils.conv2d_transpose_strided(fuse_2, W_t3, b_t3, output_shape=deconv_shape3, stride=4)
 
         annotation_pred = tf.argmax(conv_t3, axis=3, name="prediction")
 
@@ -161,7 +139,7 @@ def main(argv=None):
     tf.summary.scalar("entropy", loss)
     mean_acc = tf.reduce_mean(tf.metrics.accuracy(annotation, pred_annotation, name='ACC'))
     tf.summary.scalar("ACC", mean_acc)
-    #mean_iou = tf.metrics.mean_iou(annotation, pred_annotation, NUM_OF_CLASSESS, name='mIOU')
+    #mean_iou = tf.metrics.mean_iou(annotation, pred_annotation, NUM_OF_CLASSES, name='mIOU')
     #tf.summary.scalar("mIOU", mean_iou)
 
     trainable_var = tf.trainable_variables()
