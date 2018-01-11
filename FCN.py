@@ -1,6 +1,7 @@
 from __future__ import print_function
 import tensorflow as tf
 import numpy as np
+import time
 
 import TensorflowUtils as utils
 import read_MITSceneParsingData as scene_parsing
@@ -84,40 +85,44 @@ def inference(image, keep_prob):
         image_net = vgg_net(weights, processed_image)
         conv_final_layer = image_net["conv5_3"]
 
-        pool5 = utils.max_pool_2x2(conv_final_layer)
+        # pool5 = utils.max_pool_2x2(conv_final_layer)
 
-        W6 = utils.weight_variable([7, 7, 512, 4096], name="W6")
-        b6 = utils.bias_variable([4096], name="b6")
-        conv6 = utils.conv2d_basic(pool5, W6, b6)
-        relu6 = tf.nn.relu(conv6, name="relu6")
-        if FLAGS.debug:
-            utils.add_activation_summary(relu6)
-        relu_dropout6 = tf.nn.dropout(relu6, keep_prob=keep_prob)
+        # W6 = utils.weight_variable([7, 7, 512, 4096], name="W6")
+        # b6 = utils.bias_variable([4096], name="b6")
+        # conv6 = utils.conv2d_basic(pool5, W6, b6)
+        # relu6 = tf.nn.relu(conv6, name="relu6")
+        # if FLAGS.debug:
+        #     utils.add_activation_summary(relu6)
+        # relu_dropout6 = tf.nn.dropout(relu6, keep_prob=keep_prob)
 
-        W7 = utils.weight_variable([1, 1, 4096, 4096], name="W7")
-        b7 = utils.bias_variable([4096], name="b7")
-        conv7 = utils.conv2d_basic(relu_dropout6, W7, b7)
-        relu7 = tf.nn.relu(conv7, name="relu7")
-        if FLAGS.debug:
-            utils.add_activation_summary(relu7)
-        relu_dropout7 = tf.nn.dropout(relu7, keep_prob=keep_prob)
+        # W7 = utils.weight_variable([1, 1, 4096, 4096], name="W7")
+        # b7 = utils.bias_variable([4096], name="b7")
+        # conv7 = utils.conv2d_basic(relu_dropout6, W7, b7)
+        # relu7 = tf.nn.relu(conv7, name="relu7")
+        # if FLAGS.debug:
+        #     utils.add_activation_summary(relu7)
+        # relu_dropout7 = tf.nn.dropout(relu7, keep_prob=keep_prob)
 
-        W8 = utils.weight_variable([1, 1, 4096, NUM_OF_CLASSESS], name="W8")
-        b8 = utils.bias_variable([NUM_OF_CLASSESS], name="b8")
-        conv8 = utils.conv2d_basic(relu_dropout7, W8, b8)
-        # annotation_pred1 = tf.argmax(conv8, dimension=3, name="prediction1")
+        # W8 = utils.weight_variable([1, 1, 4096, NUM_OF_CLASSESS], name="W8")
+        # b8 = utils.bias_variable([NUM_OF_CLASSESS], name="b8")
+        # conv8 = utils.conv2d_basic(relu_dropout7, W8, b8)
+        # # annotation_pred1 = tf.argmax(conv8, dimension=3, name="prediction1")
+
+        # # now to upscale to actual image size
+        # deconv_shape1 = image_net["pool4"].get_shape()
+        # W_t1 = utils.weight_variable([4, 4, deconv_shape1[3].value, NUM_OF_CLASSESS], name="W_t1")
+        # b_t1 = utils.bias_variable([deconv_shape1[3].value], name="b_t1")
+        # conv_t1 = utils.conv2d_transpose_strided(conv8, W_t1, b_t1, output_shape=tf.shape(image_net["pool4"]))
+        # fuse_1 = tf.add(conv_t1, image_net["pool4"], name="fuse_1")
 
         # now to upscale to actual image size
-        deconv_shape1 = image_net["pool4"].get_shape()
-        W_t1 = utils.weight_variable([4, 4, deconv_shape1[3].value, NUM_OF_CLASSESS], name="W_t1")
-        b_t1 = utils.bias_variable([deconv_shape1[3].value], name="b_t1")
-        conv_t1 = utils.conv2d_transpose_strided(conv8, W_t1, b_t1, output_shape=tf.shape(image_net["pool4"]))
-        fuse_1 = tf.add(conv_t1, image_net["pool4"], name="fuse_1")
+        concat = tf.concat([conv_final_layer, image_net["pool4"]], axis=3, name='concat')
+        concat_shape = concat.get_shape()
 
         deconv_shape2 = image_net["pool3"].get_shape()
-        W_t2 = utils.weight_variable([4, 4, deconv_shape2[3].value, deconv_shape1[3].value], name="W_t2")
+        W_t2 = utils.weight_variable([4, 4, deconv_shape2[3].value, concat_shape[3].value], name="W_t2") # why 4x4?
         b_t2 = utils.bias_variable([deconv_shape2[3].value], name="b_t2")
-        conv_t2 = utils.conv2d_transpose_strided(fuse_1, W_t2, b_t2, output_shape=tf.shape(image_net["pool3"]))
+        conv_t2 = utils.conv2d_transpose_strided(concat, W_t2, b_t2, output_shape=tf.shape(image_net["pool3"]))
         fuse_2 = tf.add(conv_t2, image_net["pool3"], name="fuse_2")
 
         shape = tf.shape(image)
@@ -214,9 +219,11 @@ def main(argv=None):
 
     elif FLAGS.mode == "visualize":
         valid_images, valid_annotations = validation_dataset_reader.get_random_batch(FLAGS.batch_size)
+        time_elps = time.time()
         valid_loss, acc, pred = sess.run([loss, mean_acc, pred_annotation], feed_dict={image: valid_images, annotation: valid_annotations,
                                                     keep_probability: 1.0})
-        print("%s ---> Validation_loss: %g, ACC: %g" % (datetime.datetime.now(), valid_loss, acc))
+        time_elps = time.time() - time_elps
+        print("%s ---> Validation_loss: %g, ACC: %g, time_elapsed: %gs" % (datetime.datetime.now(), valid_loss, acc, time_elps))
         valid_annotations = np.squeeze(valid_annotations, axis=3)
         pred = np.squeeze(pred, axis=3)
 
