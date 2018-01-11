@@ -22,7 +22,7 @@ MODEL_URL = 'http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydee
 
 MAX_ITERATION = int(2e5 + 1)
 NUM_OF_CLASSESS = 2 # MIT-SP 151
-IMAGE_SIZE = 224 # MIT-SP 224
+IMAGE_SIZE = None # MIT-SP 224
 
 
 def vgg_net(weights, image):
@@ -143,8 +143,8 @@ def train(loss_val, var_list):
 
 def main(argv=None):
     keep_probability = tf.placeholder(tf.float32, name="keep_probabilty")
-    image = tf.placeholder(tf.float32, shape=[None, IMAGE_SIZE, IMAGE_SIZE, 3], name="input_image")
-    annotation = tf.placeholder(tf.int32, shape=[None, IMAGE_SIZE, IMAGE_SIZE, 1], name="annotation")
+    image = tf.placeholder(tf.float32, shape=[None, None, None, 3], name="input_image") # [None, IMAGE_SIZE, IMAGE_SIZE, 3]
+    annotation = tf.placeholder(tf.int32, shape=[None, None, None, 1], name="annotation")
 
     pred_annotation, logits = inference(image, keep_probability)
     tf.summary.image("input_image", image, max_outputs=2)
@@ -174,7 +174,7 @@ def main(argv=None):
     print(len(valid_records))
 
     print("Setting up dataset reader")
-    image_options = {'resize': True, 'resize_size': IMAGE_SIZE}
+    image_options = {'resize': True} #, 'resize_size': IMAGE_SIZE}
     if FLAGS.mode == 'train':
         train_dataset_reader = dataset.BatchDatset(train_records, image_options)
     validation_dataset_reader = dataset.BatchDatset(valid_records, image_options)

@@ -21,7 +21,7 @@ class BatchDatset:
         :param image_options: A dictionary of options for modifying the output image
         Available options:
         resize = True/ False
-        resize_size = #size of output image - does bilinear resize
+        resize_shape = shape of output image - does bilinear resize
         color=True/False
         """
         print("Initializing Batch Dataset Reader...")
@@ -44,10 +44,16 @@ class BatchDatset:
         if self.__channels and len(image.shape) < 3:  # make sure images are of shape(h,w,3)
             image = np.array([image for i in range(3)])
 
-        if self.image_options.get("resize", False) and self.image_options["resize"]:
-            resize_size = int(self.image_options["resize_size"])
+        if self.image_options.get("resize", False):
+            if 'resize_shape' not in self.image_options:
+                h_ = image.shape[0] / 32 * 32 # floor to multiple of 32
+                w_ = image.shape[1] / 32 * 32
+                self.image_options['resize_shape'] = (h_, w_)
+                print 'input image shape preprocess:', image.shape, '->', (h_, w_)
+
+            toShape = self.image_options['resize_shape']
             resize_image = misc.imresize(image,
-                                         [resize_size, resize_size], interp='nearest')
+                                         [toShape[0], toShape[1]], interp='nearest')
         else:
             resize_image = image
 
