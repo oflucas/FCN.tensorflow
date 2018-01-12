@@ -137,10 +137,10 @@ def main(argv=None):
                                                                           labels=tf.squeeze(annotation, squeeze_dims=[3]),
                                                                           name="entropy")))
     tf.summary.scalar("entropy", loss)
-    mean_acc = tf.reduce_mean(tf.metrics.accuracy(annotation, pred_annotation, name='ACC'))
-    tf.summary.scalar("ACC", mean_acc)
-    #mean_iou = tf.metrics.mean_iou(annotation, pred_annotation, NUM_OF_CLASSES, name='mIOU')
-    #tf.summary.scalar("mIOU", mean_iou)
+    metric_ops = []
+    acc = tf.contrib.metrics.accuracy(tf.cast(pred_annotation, tf.int32), annotation, name='ACC')
+    tf.summary.scalar("ACC", acc)
+    mean_iou, mean_iou_op = tf.metrics.mean_iou(annotation, pred_annotation, NUM_OF_CLASSES, name='mIOU')
 
     trainable_var = tf.trainable_variables()
     if FLAGS.debug:
@@ -190,7 +190,7 @@ def main(argv=None):
 
             if itr % 500 == 0:
                 valid_images, valid_annotations = validation_dataset_reader.next_batch(FLAGS.batch_size)
-                valid_loss, acc = sess.run([loss, mean_acc], feed_dict={image: valid_images, annotation: valid_annotations,
+                valid_loss, acc = sess.run([loss, acc], feed_dict={image: valid_images, annotation: valid_annotations,
                                                        keep_probability: 1.0})
                 print("%s ---> Validation_loss: %g, ACC: %g" % (datetime.datetime.now(), valid_loss, acc))
                 saver.save(sess, FLAGS.logs_dir + "model.ckpt", itr)
@@ -198,10 +198,12 @@ def main(argv=None):
     elif FLAGS.mode == "visualize":
         valid_images, valid_annotations = validation_dataset_reader.get_random_batch(FLAGS.batch_size)
         time_elps = time.time()
-        valid_loss, acc, pred = sess.run([loss, mean_acc, pred_annotation], feed_dict={image: valid_images, annotation: valid_annotations,
-                                                    keep_probability: 1.0})
+        valid_loss, ac, pred, cf_mat, m_iou = sess.run([loss, acc, pred_annotation, mean_iou_op, mean_iou], 
+                                         feed_dict={image: valid_images, annotation: valid_annotations, keep_probability: 1.0})
+        print ('confusion matrix:\n', cf_mat)
+        print ('iou:', cal_iou_by_cm(cf_mat))
         time_elps = time.time() - time_elps
-        print("%s ---> Validation_loss: %g, ACC: %g, time_elapsed: %gs" % (datetime.datetime.now(), valid_loss, acc, time_elps))
+        print("%s ---> Validation_loss: %g, ACC: %g, mIOU: %g, time_elapsed: %gs" % (datetime.datetime.now(), valid_loss, ac, m_iou, time_elps))
         valid_annotations = np.squeeze(valid_annotations, axis=3)
         pred = np.squeeze(pred, axis=3)
 
@@ -210,6 +212,22 @@ def main(argv=None):
             utils.save_image(valid_annotations[itr].astype(np.uint8), FLAGS.logs_dir, name="gt_" + str(itr))
             utils.save_image(pred[itr].astype(np.uint8), FLAGS.logs_dir, name="pred_" + str(itr))
             print("Saved image: %d" % itr)
+
+
+def cal_iou_by_cm(cf_mat):
+    """
+    input
+    cf_mat: 2D np array, confusion matrix
+    output
+    ious: 1D np array, iou of each class
+    """
+    class_n = cf_mat.shape[0]
+    true_pos = cf_mat[np.arange(class_n), np.arange(class_n)]
+    total_truth = np.sum(cf_mat, axis=0)
+    total_predict = np.sum(cf_mat, axis=1)
+    denum = np.maximum(total_truth + total_predict - true_pos, 0.001).astype(np.float32);
+    return true_pos / denum;
+    
 
 if __name__ == "__main__":
     tf.app.run()
