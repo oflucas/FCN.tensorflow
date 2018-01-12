@@ -22,22 +22,30 @@ class BatchDatset:
         Available options:
         resize = True/ False
         resize_shape = shape of output image - does bilinear resize
-        color=True/False
+        color = True/False
+        infer = True/False, the mode to infer a picture from input;
+                if True, will have zero annotations everywhere
         """
         print("Initializing Batch Dataset Reader...")
         print(image_options)
         self.files = records_list
         self.image_options = image_options
         self._read_images()
+        self.reset_batch_offset()
 
     def _read_images(self):
         self.__channels = True
         self.images = np.array([self._transform(filename['image']) for filename in self.files])
+        print ('images shape:     ', self.images.shape)
+        
+        if self.image_options.get('infer', False):
+            self.annotations = np.zeros(self.images.shape[:3])
+            return
+        
         self.__channels = False
         self.annotations = np.array(
             [np.expand_dims(self._transform(filename['annotation']), axis=3) for filename in self.files])
-        print (self.images.shape)
-        print (self.annotations.shape)
+        print ('annotations shape:', self.annotations.shape)
 
     def _transform(self, filename):
         image = misc.imread(filename)
@@ -87,3 +95,11 @@ class BatchDatset:
     def get_random_batch(self, batch_size):
         indexes = np.random.randint(0, self.images.shape[0], size=[batch_size]).tolist()
         return self.images[indexes], self.annotations[indexes]
+
+    def next_sequential_batch(self, batch_size):
+        start = self.batch_offset
+        self.batch_offset += batch_size
+        last_batch = (self.batch_offset >= self.images.shape[0])
+        if last_batch:
+            self.batch_offset = self.images.shape[0]
+        return self.images[start:self.batch_offset], self.annotations[start:self.batch_offset], last_batch

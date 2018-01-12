@@ -2,6 +2,7 @@ from __future__ import print_function
 import tensorflow as tf
 import numpy as np
 import time
+import os, sys
 
 import TensorflowUtils as utils
 import read_MITSceneParsingData as scene_parsing
@@ -17,7 +18,7 @@ tf.flags.DEFINE_string("data_dir", "Data_zoo/MIT_SceneParsing/", "path to datase
 tf.flags.DEFINE_float("learning_rate", "1e-4", "Learning rate for Adam Optimizer")
 tf.flags.DEFINE_string("model_dir", "Model_zoo/", "Path to vgg model mat")
 tf.flags.DEFINE_bool('debug', "False", "Debug mode: True/ False")
-tf.flags.DEFINE_string('mode', "train", "Mode train/ test/ visualize")
+tf.flags.DEFINE_string('mode', "train", "Mode train/ infer/ visualize")
 
 MODEL_URL = 'http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat'
 
@@ -152,15 +153,22 @@ def main(argv=None):
     summary_op = tf.summary.merge_all()
 
     print("Setting up image reader...")
-    train_records, valid_records = kitti_data.read_dataset() #scene_parsing.read_dataset(FLAGS.data_dir)
-    print(len(train_records))
-    print(len(valid_records))
+    if FLAGS.mode != 'infer':
+        train_records, valid_records = kitti_data.read_dataset() #scene_parsing.read_dataset(FLAGS.data_dir)
+        print(len(train_records))
+        print(len(valid_records))
+    else:
+        test_records = kitti_data.test_data(FLAGS.data_dir)
 
     print("Setting up dataset reader")
-    image_options = {'resize': True} #, 'resize_size': IMAGE_SIZE}
-    if FLAGS.mode == 'train':
-        train_dataset_reader = dataset.BatchDatset(train_records, image_options)
-    validation_dataset_reader = dataset.BatchDatset(valid_records, image_options)
+    image_options = {'resize': True} 
+    if FLAGS.mode == 'infer':
+        image_options['infer'] = True
+        test_dataset_reader = dataset.BatchDatset(test_records, image_options)
+    else:
+        if FLAGS.mode == 'train':
+            train_dataset_reader = dataset.BatchDatset(train_records, image_options)
+        validation_dataset_reader = dataset.BatchDatset(valid_records, image_options)
 
     sess = tf.Session()
 
@@ -188,11 +196,11 @@ def main(argv=None):
                 print("Step: %d, Train_loss:%g" % (itr, train_loss))
                 summary_writer.add_summary(summary_str, itr)
 
-            if itr % 500 == 0:
+            if itr % 100 == 0:
                 valid_images, valid_annotations = validation_dataset_reader.next_batch(FLAGS.batch_size)
-                valid_loss, acc = sess.run([loss, acc], feed_dict={image: valid_images, annotation: valid_annotations,
+                valid_loss, ac = sess.run([loss, acc], feed_dict={image: valid_images, annotation: valid_annotations,
                                                        keep_probability: 1.0})
-                print("%s ---> Validation_loss: %g, ACC: %g" % (datetime.datetime.now(), valid_loss, acc))
+                print("%s ---> Validation_loss: %g, ACC: %g" % (datetime.datetime.now(), valid_loss, ac))
                 saver.save(sess, FLAGS.logs_dir + "model.ckpt", itr)
 
     elif FLAGS.mode == "visualize":
@@ -207,11 +215,40 @@ def main(argv=None):
         valid_annotations = np.squeeze(valid_annotations, axis=3)
         pred = np.squeeze(pred, axis=3)
 
+        pred_draw = valid_images.copy()
+        pred_draw[:,:,:,1][pred > 0] = 255
+
         for itr in range(FLAGS.batch_size):
             utils.save_image(valid_images[itr].astype(np.uint8), FLAGS.logs_dir, name="inp_" + str(itr))
             utils.save_image(valid_annotations[itr].astype(np.uint8), FLAGS.logs_dir, name="gt_" + str(itr))
             utils.save_image(pred[itr].astype(np.uint8), FLAGS.logs_dir, name="pred_" + str(itr))
+            utils.save_image(pred_draw[itr].astype(np.uint8), FLAGS.logs_dir, name="draw_" + str(itr))
             print("Saved image: %d" % itr)
+
+    elif FLAGS.mode == "infer":
+        result_dir = os.path.join(FLAGS.data_dir, 'result')
+        if not os.path.exists(result_dir):
+            os.makedirs(result_dir)
+
+        last_batch = False
+        it = 0
+        while (not last_batch):
+            test_images, _, last_batch = test_dataset_reader.next_sequential_batch(FLAGS.batch_size)
+            time_elps = time.time()
+            pred = sess.run([pred_annotation], feed_dict={image: test_images, keep_probability: 1.0})
+            time_elps = time.time() - time_elps
+            print("batch no.%d, time_elapsed: %gs" % (it, time_elps))
+            pred = np.squeeze(pred, axis=3)
+
+            pred_draw = test_images.copy()
+            pred_draw[:,:,:,1][pred > 0] = 255
+
+            for itr in range(test_images.shape[0]):
+                name_ = test_dataset_reader.files[it * FLAGS.batch_size + itr]['name'];
+                utils.save_image(test_images[itr].astype(np.uint8), result_dir, name=name_)
+                utils.save_image(pred_draw[itr].astype(np.uint8), result_dir, name=name_+'_I')
+
+            it += 1
 
 
 def cal_iou_by_cm(cf_mat):

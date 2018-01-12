@@ -21,7 +21,7 @@ def read_dataset(data_dir=TRAIN_DATA_DIR):
     """
     assert os.path.exists(data_dir), "Cannot find dir = " + data_dir
     
-    anno_dir = os.path.join(data_dir, 'annotations_road')
+    anno_dir = os.path.join(data_dir, 'annotations_lane') # annotations_road, annotations_lane
     im_dir = os.path.join(data_dir, 'image_2')
     records = retrive_records(anno_dir, im_dir)
 
@@ -43,6 +43,20 @@ def retrive_records(anno_dir, im_dir):
 
         res.append({'image': im, 'annotation': anno})
 
+    return res
+
+def test_data(im_dir):
+    assert os.path.exists(im_dir), "Cannot find dir = " + im_dir
+    res = []
+    if os.path.isfile(im_dir):
+        files = [im_dir]
+    if os.path.isdir(im_dir):
+        files = glob.glob(os.path.join(im_dir, '*.png'))
+        files.extend(glob.glob(os.path.join(im_dir, '*.jpg')))
+
+    for f in files:
+        fname = os.path.splitext(f.split("/")[-1])[0]
+        res.append({'image': f, 'name': fname})
     return res
 
 
