@@ -109,7 +109,7 @@ def inference(image, keep_prob):
         b_t3 = utils.bias_variable([NUM_OF_CLASSES], name="b_t3")
         conv_t3 = utils.conv2d_transpose_strided(fuse_2, W_t3, b_t3, output_shape=deconv_shape3, stride=4)
 
-        annotation_pred = tf.argmax(conv_t3, axis=3, name="prediction")
+        annotation_pred = tf.argmax(conv_t3, axis=3, name="prediction", output_type=tf.int32)
 
     return tf.expand_dims(annotation_pred, axis=3), conv_t3
 
@@ -138,7 +138,7 @@ def main(argv=None):
                                                                           name="entropy")))
     tf.summary.scalar("entropy", loss)
     metric_ops = []
-    acc = tf.contrib.metrics.accuracy(tf.cast(pred_annotation, tf.int32), annotation, name='ACC')
+    acc = tf.contrib.metrics.accuracy(pred_annotation, annotation, name='ACC')
     tf.summary.scalar("ACC", acc)
     mean_iou, mean_iou_op = tf.metrics.mean_iou(annotation, pred_annotation, NUM_OF_CLASSES, name='mIOU')
 
@@ -200,8 +200,8 @@ def main(argv=None):
         time_elps = time.time()
         valid_loss, ac, pred, cf_mat, m_iou = sess.run([loss, acc, pred_annotation, mean_iou_op, mean_iou], 
                                          feed_dict={image: valid_images, annotation: valid_annotations, keep_probability: 1.0})
-        print ('confusion matrix:\n', cf_mat)
-        print ('iou:', cal_iou_by_cm(cf_mat))
+        print ('iou:', cal_iou_by_cm(cf_mat), m_iou)
+        m_iou = sess.run(mean_iou)
         time_elps = time.time() - time_elps
         print("%s ---> Validation_loss: %g, ACC: %g, mIOU: %g, time_elapsed: %gs" % (datetime.datetime.now(), valid_loss, ac, m_iou, time_elps))
         valid_annotations = np.squeeze(valid_annotations, axis=3)
