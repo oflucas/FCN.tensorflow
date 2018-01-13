@@ -47,7 +47,7 @@ Here's the training curves:
 
 ## Next Works
 - Post processing the predicted images. Consider use CRF.
-- KITTI dataset is limited (300 images for train). More data is required to learn rich & generalized features and take care of more scene type. Consider use [](http://benchmark.tusimple.ai/#/t/1/dataset) or [](http://synthia-dataset.net/).
+- KITTI dataset is limited (300 images for train). More data is required to learn rich & generalized features and take care of more scene type. Consider use [tusimple](http://benchmark.tusimple.ai/#/t/1/dataset) or [synthia](http://synthia-dataset.net/).
 - Benchmark on public dataset.
 
 ## Others
