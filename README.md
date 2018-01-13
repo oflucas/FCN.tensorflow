@@ -1,7 +1,8 @@
 # LANE DETECTION 
 This is a light weight Tensorflow implementation of lane detection using fully connected convolutional (FCN) network.
 
-![A Demo Picture](logs/draw_1.png)
+![](logs/draw_1.png)
+A Demo Picture
 
 This is a forked work from [link](https://github.com/shekkizh/FCN.tensorflow). 
 The implementation is largely based on the reference code provided by the authors of the paper [link](https://github.com/shelhamer/fcn.berkeleyvision.org). 
@@ -37,10 +38,12 @@ python FCN.py --batch_size=5 --mode=infer --data_dir=<image directory or path>
 
 
 ## Results
-After 1000 batches (~200 epochs), validation set gets:
+After 1000 batches (~200 epochs), on validation set gets:
 
 ACC (pixcel accuracy): 0.963042, mIOU: 0.797466, time: 5 images / 1.8s
 
+Here's the training curves:
+![](logs/training_curve.png)
 
 ## Next Works
 - Post processing the predicted images. Consider use CRF.
