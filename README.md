@@ -8,7 +8,7 @@ The implementation is largely based on the reference code provided by the author
 
 ## Hightlighted Work
  - Take input images of any size.
- - Tailored model for performance: 20 layers lighter than pretrained model.
+ - Tailored model for performance: 20 layers lighter than pretrained model. 86% less parameter memory.
 
 ## Prerequisites
  - The code was written and tested with `tensorflow0.14` and `python2.7`. 
