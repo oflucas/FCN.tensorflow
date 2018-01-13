@@ -1,0 +1,70 @@
+Computing category specific location potential as a simple baseline for classifying the data...
+Using ground truth data from: ../../data_road/training/gt_image_2
+All categories = ['um_lane', 'um_road', 'umm_road', 'uu_road']
+Computing on dataset: um for class: lane
+gt image shape: um_lane {(376, 1241): '../../data_road/training/gt_image_2/um_lane_000094.png', (375, 1242): '../../data_road/training/gt_image_2/um_lane_000083.png', (370, 1226): '../../data_road/training/gt_image_2/um_lane_000092.png'}
+trainData_file_gt: (376, 1241) out: (376, 1242)
+Done: computing location potential for category: um_lane.
+Writing location potential as perspective probability map into ../../data_road/results/baseline_perspective_train.
+Done: Creating perspective baseline.
+Computing on dataset: um for class: road
+gt image shape: um_road {(376, 1241): '../../data_road/training/gt_image_2/um_road_000094.png', (375, 1242): '../../data_road/training/gt_image_2/um_road_000083.png', (370, 1226): '../../data_road/training/gt_image_2/um_road_000092.png'}
+trainData_file_gt: (376, 1241) out: (376, 1242)
+Done: computing location potential for category: um_road.
+Writing location potential as perspective probability map into ../../data_road/results/baseline_perspective_train.
+Done: Creating perspective baseline.
+Computing on dataset: umm for class: road
+gt image shape: umm_road {(376, 1241): '../../data_road/training/gt_image_2/umm_road_000095.png', (370, 1226): '../../data_road/training/gt_image_2/umm_road_000087.png', (375, 1242): '../../data_road/training/gt_image_2/umm_road_000079.png', (374, 1238): '../../data_road/training/gt_image_2/umm_road_000080.png'}
+trainData_file_gt: (376, 1241) out: (376, 1242)
+Done: computing location potential for category: umm_road.
+Writing location potential as perspective probability map into ../../data_road/results/baseline_perspective_train.
+Done: Creating perspective baseline.
+Computing on dataset: uu for class: road
+gt image shape: uu_road {(376, 1241): '../../data_road/training/gt_image_2/uu_road_000097.png', (370, 1226): '../../data_road/training/gt_image_2/uu_road_000072.png', (375, 1242): '../../data_road/training/gt_image_2/uu_road_000037.png', (374, 1238): '../../data_road/training/gt_image_2/uu_road_000039.png'}
+trainData_file_gt: (376, 1241) out: (376, 1242)
+Done: computing location potential for category: uu_road.
+Writing location potential as perspective probability map into ../../data_road/results/baseline_perspective_train.
+Done: Creating perspective baseline.
+Starting evaluation ...
+Available categories are: ['um_lane', 'um_road', 'umm_road', 'uu_road']
+Execute evaluation for category um_lane ...
+Searching for submitted files with prefix: um_lane_
+Computing evaluation scores...
+MaxF: 86.93 
+AvgPrec: 90.74 
+PRE_wp: 86.91 
+REC_wp: 86.95 
+FPR_wp: 1.17 
+FNR_wp: 13.05 
+Finished evaluating category: um_lane 
+Execute evaluation for category um_road ...
+Searching for submitted files with prefix: um_road_
+Computing evaluation scores...
+MaxF: 89.62 
+AvgPrec: 93.21 
+PRE_wp: 89.32 
+REC_wp: 89.93 
+FPR_wp: 2.12 
+FNR_wp: 10.07 
+Finished evaluating category: um_road 
+Execute evaluation for category umm_road ...
+Searching for submitted files with prefix: umm_road_
+Computing evaluation scores...
+MaxF: 83.00 
+AvgPrec: 89.42 
+PRE_wp: 77.65 
+REC_wp: 89.14 
+FPR_wp: 8.03 
+FNR_wp: 10.86 
+Finished evaluating category: umm_road 
+Execute evaluation for category uu_road ...
+Searching for submitted files with prefix: uu_road_
+Computing evaluation scores...
+MaxF: 81.50 
+AvgPrec: 87.35 
+PRE_wp: 79.03 
+REC_wp: 84.13 
+FPR_wp: 3.52 
+FNR_wp: 15.87 
+Finished evaluating category: uu_road 
+Successfully finished evaluation for 4 categories: ['um_lane', 'um_road', 'umm_road', 'uu_road'] 

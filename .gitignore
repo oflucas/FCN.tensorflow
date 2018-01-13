@@ -1,7 +1,9 @@
-logs/*
+model.ckpt*
+events.out.tfevents.*
+*checkpoints*
 .idea
-Data_zoo/*
-Model_zoo/*
+*.png
+*.jpg
 *.pyc
 *.log
 tags

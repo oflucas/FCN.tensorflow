@@ -1,0 +1,176 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+BevParams	BirdsEyeView.py	/^class BevParams(object):$/;"	c
+BirdsEyeView	BirdsEyeView.py	/^class BirdsEyeView(object):$/;"	c
+BirdsEyeView	transform2BEV.py	/^from BirdsEyeView import BirdsEyeView$/;"	i
+KittiCalibration	BirdsEyeView.py	/^class KittiCalibration(object):$/;"	c
+OpenCV	computeBaseline.py	/^import cv2 # OpenCV$/;"	i
+OpenCV	computingPipeline.py	/^import cv2 # OpenCV$/;"	i
+OpenCV	evaluateRoad.py	/^import cv2 # OpenCV$/;"	i
+OpenCV	transform2BEV.py	/^import cv2 # OpenCV$/;"	i
+P2	BirdsEyeView.py	/^    P2 = None$/;"	v	class:KittiCalibration
+R0_rect	BirdsEyeView.py	/^    R0_rect = None$/;"	v	class:KittiCalibration
+Tr	BirdsEyeView.py	/^    Tr = None$/;"	v	class:KittiCalibration
+Tr33	BirdsEyeView.py	/^    Tr33 = None$/;"	v	class:KittiCalibration
+Tr_cam_to_road	BirdsEyeView.py	/^    Tr_cam_to_road = None$/;"	v	class:KittiCalibration
+__init__	BirdsEyeView.py	/^    def __init__(self):$/;"	m	class:KittiCalibration
+__init__	BirdsEyeView.py	/^    def __init__(self, bev_res, bev_xLimits, bev_zLimits, imSize):$/;"	m	class:BevParams
+__init__	BirdsEyeView.py	/^    def __init__(self, bev_res= 0.05, bev_xRange_minMax = (-10, 10), bev_zRange_minMax = (6, 46)):$/;"	m	class:BirdsEyeView
+bevParams	BirdsEyeView.py	/^    bevParams = None$/;"	v	class:BirdsEyeView
+bev_res	BirdsEyeView.py	/^    bev_res = None$/;"	v	class:BevParams
+bev_size	BirdsEyeView.py	/^    bev_size = None$/;"	v	class:BevParams
+bev_xLimits	BirdsEyeView.py	/^    bev_xLimits = None$/;"	v	class:BevParams
+bev_x_ind	BirdsEyeView.py	/^    bev_x_ind = None$/;"	v	class:BirdsEyeView
+bev_zLimits	BirdsEyeView.py	/^    bev_zLimits = None$/;"	v	class:BevParams
+bev_z_ind	BirdsEyeView.py	/^    bev_z_ind = None$/;"	v	class:BirdsEyeView
+calcEvalMeasures	helper.py	/^def calcEvalMeasures(evalDict, tag  = '_wp'):$/;"	f
+calib_dir	BirdsEyeView.py	/^    calib_dir = None$/;"	v	class:KittiCalibration
+calib_end	BirdsEyeView.py	/^    calib_end = None$/;"	v	class:KittiCalibration
+calib_end	computeBaseline.py	/^    calib_end = '.txt'$/;"	v	class:dataStructure
+calib_end	computingPipeline.py	/^    calib_end = '.txt'$/;"	v	class:dataStructure
+calib_end	evaluateRoad.py	/^    calib_end = '.txt'$/;"	v	class:dataStructure
+cats	computeBaseline.py	/^    cats = ['um_lane', 'um_road', 'umm_road', 'uu_road']$/;"	v	class:dataStructure
+cats	computingPipeline.py	/^    cats = ['um_', 'umm_', 'uu_']$/;"	v	class:dataStructure
+cats	evaluateRoad.py	/^    cats = ['um_lane', 'um_road', 'umm_road', 'uu_road']$/;"	v	class:dataStructure
+compute	BirdsEyeView.py	/^    def compute(self, data):$/;"	m	class:BirdsEyeView
+computeBEVLookUpTable	BirdsEyeView.py	/^    def computeBEVLookUpTable(self, cropping_ul = None, cropping_size = None):$/;"	m	class:BirdsEyeView
+computeBEVLookUpTable_reverse	BirdsEyeView.py	/^    def computeBEVLookUpTable_reverse(self, imSize = None):$/;"	m	class:BirdsEyeView
+computeBaseline	simpleExample_evalTrainResults.py	/^import computeBaseline, evaluateRoad$/;"	i
+computeBaseline	simpleExample_transformTestResults2BEV.py	/^import computeBaseline, transform2BEV$/;"	i
+compute_reverse	BirdsEyeView.py	/^    def compute_reverse(self, data, imSize):$/;"	m	class:BirdsEyeView
+computingPipeline	simpleExample_generateBEVResults.py	/^import computingPipeline, transform2BEV$/;"	i
+convertPositionMetric2Pixel	BirdsEyeView.py	/^    def convertPositionMetric2Pixel(self, YXpointArrays):$/;"	m	class:BevParams
+convertPositionPixel2Metric	BirdsEyeView.py	/^    def convertPositionPixel2Metric(self, YXpointArrays):$/;"	m	class:BevParams
+convertPositionPixel2Metric2	BirdsEyeView.py	/^    def convertPositionPixel2Metric2(self, inputTupleY, inputTupleX):$/;"	m	class:BevParams
+cv2	computeBaseline.py	/^import cv2 # OpenCV$/;"	i
+cv2	computeBaseline.py	/^import os, sys, cv2$/;"	i
+cv2	computingPipeline.py	/^import cv2 # OpenCV$/;"	i
+cv2	computingPipeline.py	/^import os, sys, cv2$/;"	i
+cv2	evaluateRoad.py	/^import cv2 # OpenCV$/;"	i
+cv2	helper.py	/^import cv2$/;"	i
+cv2	transform2BEV.py	/^import cv2 # OpenCV$/;"	i
+dataFiles	transform2BEV.py	/^    dataFiles = sys.argv[1]$/;"	v
+dataStructure	computeBaseline.py	/^class dataStructure: $/;"	c
+dataStructure	computingPipeline.py	/^class dataStructure: $/;"	c
+dataStructure	evaluateRoad.py	/^class dataStructure: $/;"	c
+datasetDir	simpleExample_evalTrainResults.py	/^    datasetDir = sys.argv[1]$/;"	v
+datasetDir	simpleExample_generateBEVResults.py	/^    datasetDir = sys.argv[1]$/;"	v
+datasetDir	simpleExample_transformTestResults2BEV.py	/^    datasetDir = sys.argv[1]$/;"	v
+evalExp	evaluateRoad.py	/^from helper import evalExp, pxEval_maximizeFMeasure, getGroundTruth$/;"	i
+evalExp	helper.py	/^def evalExp(gtBin, cur_prob, thres, validMap = None, validArea=None):$/;"	f
+eval_propertyList	computeBaseline.py	/^    eval_propertyList = ['MaxF', 'AvgPrec', 'PRE_wp', 'REC_wp', 'FPR_wp', 'FNR_wp' ] $/;"	v	class:dataStructure
+eval_propertyList	computingPipeline.py	/^    eval_propertyList = ['MaxF', 'AvgPrec', 'PRE_wp', 'REC_wp', 'FPR_wp', 'FNR_wp' ] $/;"	v	class:dataStructure
+eval_propertyList	evaluateRoad.py	/^    eval_propertyList = ['MaxF', 'AvgPrec', 'PRE_wp', 'REC_wp', 'FPR_wp', 'FNR_wp' ] $/;"	v	class:dataStructure
+evaluateRoad	simpleExample_evalTrainResults.py	/^import computeBaseline, evaluateRoad$/;"	i
+getGroundTruth	evaluateRoad.py	/^from helper import evalExp, pxEval_maximizeFMeasure, getGroundTruth$/;"	i
+getGroundTruth	helper.py	/^def getGroundTruth(fileNameGT):$/;"	f
+get_matrix33	BirdsEyeView.py	/^    def get_matrix33(self):$/;"	m	class:KittiCalibration
+glob	computeBaseline.py	/^from glob import glob$/;"	i
+glob	computingPipeline.py	/^from glob import glob$/;"	i
+glob	evaluateRoad.py	/^from glob import glob$/;"	i
+glob	transform2BEV.py	/^from glob import glob$/;"	i
+gt_dir	evaluateRoad.py	/^    gt_dir = sys.argv[2]$/;"	v
+gt_end	computeBaseline.py	/^    gt_end = '.png'$/;"	v	class:dataStructure
+gt_end	computingPipeline.py	/^    gt_end = '.png'$/;"	v	class:dataStructure
+gt_end	evaluateRoad.py	/^    gt_end = '.png'$/;"	v	class:dataStructure
+imSize	BirdsEyeView.py	/^    imSize = None$/;"	v	class:BevParams
+imSize	BirdsEyeView.py	/^    imSize = None$/;"	v	class:BirdsEyeView
+imSize_back	BirdsEyeView.py	/^    imSize_back = None$/;"	v	class:BevParams
+im_end	computeBaseline.py	/^    im_end = '.png'$/;"	v	class:dataStructure
+im_end	computingPipeline.py	/^    im_end = '.png'$/;"	v	class:dataStructure
+im_end	evaluateRoad.py	/^    im_end = '.png'$/;"	v	class:dataStructure
+im_u_float	BirdsEyeView.py	/^    im_u_float = None$/;"	v	class:BirdsEyeView
+im_v_float	BirdsEyeView.py	/^    im_v_float = None$/;"	v	class:BirdsEyeView
+image2world_uvMat	BirdsEyeView.py	/^    def image2world_uvMat(self, uv_mat):$/;"	m	class:BirdsEyeView
+imageShape_max	computeBaseline.py	/^    imageShape_max = (376, 1242,)$/;"	v	class:dataStructure
+imageShape_max	computingPipeline.py	/^    imageShape_max = (376, 1242,)$/;"	v	class:dataStructure
+inputFiles	simpleExample_generateBEVResults.py	/^    inputFiles = os.path.join(outputDir_perspective, '*.png')$/;"	v
+inputFiles	simpleExample_transformTestResults2BEV.py	/^    inputFiles = os.path.join(outputDir_perspective, '*.png')$/;"	v
+invalid_value	BirdsEyeView.py	/^    invalid_value = float('-INFINITY')$/;"	v	class:BirdsEyeView
+logging	BirdsEyeView.py	/^import logging$/;"	i
+main	computeBaseline.py	/^def main(train_dir, test_dir, outputDir):$/;"	f
+main	computingPipeline.py	/^def main(test_dir, outputDir):$/;"	f
+main	evaluateRoad.py	/^def main(result_dir, train_dir, debug = False):$/;"	f
+main	transform2BEV.py	/^def main(dataFiles, pathToCalib, outputPath, calib_end  = '.txt'):$/;"	f
+meter2px	BirdsEyeView.py	/^    def meter2px(self, meter_in):$/;"	m	class:BevParams
+modBev_plot	helper.py	/^def modBev_plot(ax, rangeX = [-10, 10 ], rangeXpx= [0, 400], numDeltaX = 5, rangeZ= [8,48 ], rangeZpx= [0, 800], numDeltaZ = 9, fontSize = None, xlabel = 'x [m]', ylabel = 'z [m]'):$/;"	f
+np	BirdsEyeView.py	/^import numpy as np$/;"	i
+np	computeBaseline.py	/^import numpy as np$/;"	i
+np	computingPipeline.py	/^import numpy as np$/;"	i
+np	evaluateRoad.py	/^import numpy as np$/;"	i
+np	helper.py	/^import numpy as np$/;"	i
+os	BirdsEyeView.py	/^import os$/;"	i
+os	computeBaseline.py	/^import os, sys, cv2$/;"	i
+os	computingPipeline.py	/^import os, sys, cv2$/;"	i
+os	evaluateRoad.py	/^import sys,os$/;"	i
+os	helper.py	/^import os$/;"	i
+os	simpleExample_evalTrainResults.py	/^import os, sys$/;"	i
+os	simpleExample_generateBEVResults.py	/^import os, sys$/;"	i
+os	simpleExample_transformTestResults2BEV.py	/^import os, sys$/;"	i
+os	transform2BEV.py	/^import os,sys$/;"	i
+outputDir	computeBaseline.py	/^    outputDir = sys.argv[3] # Directory for saveing the output data$/;"	v
+outputDir	computingPipeline.py	/^    outputDir = sys.argv[2] # Directory for saveing the output data$/;"	v
+outputDir	simpleExample_evalTrainResults.py	/^        outputDir = os.path.join(datasetDir, 'results')  $/;"	v
+outputDir	simpleExample_evalTrainResults.py	/^        outputDir = sys.argv[2]   $/;"	v
+outputDir	simpleExample_generateBEVResults.py	/^        outputDir = os.path.join(datasetDir, 'results')$/;"	v
+outputDir	simpleExample_generateBEVResults.py	/^        outputDir = sys.argv[2]   $/;"	v
+outputDir	simpleExample_transformTestResults2BEV.py	/^        outputDir = os.path.join(datasetDir, 'results')$/;"	v
+outputDir	simpleExample_transformTestResults2BEV.py	/^        outputDir = sys.argv[2]   $/;"	v
+outputDir_bev	simpleExample_generateBEVResults.py	/^    outputDir_bev = os.path.join(outputDir, 'segmentation_bev_test')$/;"	v
+outputDir_bev	simpleExample_transformTestResults2BEV.py	/^    outputDir_bev = os.path.join(outputDir, 'baseline_bev_test')$/;"	v
+outputDir_perspective	simpleExample_evalTrainResults.py	/^    outputDir_perspective = os.path.join(outputDir, 'baseline_perspective_train')$/;"	v
+outputDir_perspective	simpleExample_generateBEVResults.py	/^    outputDir_perspective = os.path.join(outputDir, 'segmentation_perspective_test')$/;"	v
+outputDir_perspective	simpleExample_transformTestResults2BEV.py	/^    outputDir_perspective = os.path.join(outputDir, 'baseline_perspective_test')$/;"	v
+outputPath	transform2BEV.py	/^    outputPath = sys.argv[3]$/;"	v
+overlayImageWithConfidence	computingPipeline.py	/^from helper import overlayImageWithConfidence$/;"	i
+overlayImageWithConfidence	helper.py	/^def overlayImageWithConfidence(in_image, conf, vis_channel = 1, threshold = 0.5):$/;"	f
+pathToCalib	transform2BEV.py	/^    pathToCalib = sys.argv[2]$/;"	v
+plotPrecisionRecall	helper.py	/^def plotPrecisionRecall(precision, recall, outFileName, Fig=None, drawCol=1, textLabel = None, title = None, fontsize1 = 24, fontsize2 = 20, linewidth = 3):$/;"	f
+prob_end	computeBaseline.py	/^    prob_end = '.png'$/;"	v	class:dataStructure
+prob_end	computingPipeline.py	/^    prob_end = '.png'$/;"	v	class:dataStructure
+prob_end	evaluateRoad.py	/^    prob_end = '.png'$/;"	v	class:dataStructure
+px2meter	BirdsEyeView.py	/^    def px2meter(self, px_in):$/;"	m	class:BevParams
+pxEval_maximizeFMeasure	evaluateRoad.py	/^from helper import evalExp, pxEval_maximizeFMeasure, getGroundTruth$/;"	i
+pxEval_maximizeFMeasure	helper.py	/^def pxEval_maximizeFMeasure(totalPosNum, totalNegNum, totalFN, totalFP, thresh = None):$/;"	f
+pylab	helper.py	/^import pylab$/;"	i
+readFromFile	BirdsEyeView.py	/^    def readFromFile(self, filekey = None, fn = None):$/;"	m	class:KittiCalibration
+readKittiCalib	BirdsEyeView.py	/^def readKittiCalib(filename, dtype = 'f8'):$/;"	f
+result_dir	evaluateRoad.py	/^    result_dir = sys.argv[1]$/;"	v
+saveBEVImageWithAxes	helper.py	/^def saveBEVImageWithAxes(data, outputname, cmap = None, xlabel = 'x [m]', ylabel = 'z [m]', rangeX = [-10, 10], rangeXpx = None, numDeltaX = 5, rangeZ = [7, 62], rangeZpx = None, numDeltaZ = 5, fontSize = 16):$/;"	f
+setAxLinesBW	helper.py	/^def setAxLinesBW(ax):$/;"	f
+setFigLinesBW	helper.py	/^def setFigLinesBW(fig):$/;"	f
+set_matrix33	BirdsEyeView.py	/^    def set_matrix33(self, matrix33):$/;"	m	class:BirdsEyeView
+setup	BirdsEyeView.py	/^    def setup(self, calib_file):$/;"	m	class:BirdsEyeView
+setup	BirdsEyeView.py	/^    def setup(self, dictWithKittiStuff, useRect = False):$/;"	m	class:KittiCalibration
+shutil	evaluateRoad.py	/^import shutil$/;"	i
+sys	computeBaseline.py	/^import os, sys, cv2$/;"	i
+sys	computingPipeline.py	/^import os, sys, cv2$/;"	i
+sys	evaluateRoad.py	/^import sys,os$/;"	i
+sys	simpleExample_evalTrainResults.py	/^import os, sys$/;"	i
+sys	simpleExample_generateBEVResults.py	/^import os, sys$/;"	i
+sys	simpleExample_transformTestResults2BEV.py	/^import os, sys$/;"	i
+sys	transform2BEV.py	/^import os,sys$/;"	i
+testData_pathToCalib	simpleExample_generateBEVResults.py	/^    testData_pathToCalib = os.path.join(datasetDir, 'testing\/calib')$/;"	v
+testData_pathToCalib	simpleExample_transformTestResults2BEV.py	/^    testData_pathToCalib = os.path.join(datasetDir, 'testing\/calib')$/;"	v
+testData_subdir_im2	computeBaseline.py	/^    testData_subdir_im2 = 'image_2'$/;"	v	class:dataStructure
+testData_subdir_im2	computingPipeline.py	/^    testData_subdir_im2 = 'image_2'$/;"	v	class:dataStructure
+testDir	computeBaseline.py	/^    testDir = sys.argv[2]$/;"	v
+testDir	computingPipeline.py	/^    testDir = sys.argv[1]$/;"	v
+testDir	simpleExample_generateBEVResults.py	/^    testDir = os.path.join(datasetDir, 'testing')$/;"	v
+testDir	simpleExample_transformTestResults2BEV.py	/^    testDir = os.path.join(datasetDir, 'testing')$/;"	v
+trainData_subdir_gt	computeBaseline.py	/^    trainData_subdir_gt = 'gt_image_2'$/;"	v	class:dataStructure
+trainData_subdir_gt	computingPipeline.py	/^    trainData_subdir_gt = 'gt_image_2'$/;"	v	class:dataStructure
+trainDir	computeBaseline.py	/^    trainDir = sys.argv[1]$/;"	v
+trainDir	simpleExample_evalTrainResults.py	/^    trainDir = os.path.join(datasetDir, 'training')$/;"	v
+trainDir	simpleExample_generateBEVResults.py	/^    trainDir = os.path.join(datasetDir, 'training')$/;"	v
+trainDir	simpleExample_transformTestResults2BEV.py	/^    trainDir = os.path.join(datasetDir, 'training')$/;"	v
+transform2BEV	simpleExample_generateBEVResults.py	/^import computingPipeline, transform2BEV$/;"	i
+transform2BEV	simpleExample_transformTestResults2BEV.py	/^import computeBaseline, transform2BEV$/;"	i
+transformBEV2Image	BirdsEyeView.py	/^    def transformBEV2Image(self, bevMask, out_dtype = 'f4'):$/;"	m	class:BirdsEyeView
+transformImage2BEV	BirdsEyeView.py	/^    def transformImage2BEV(self, inImage, out_dtype = 'f4'):$/;"	m	class:BirdsEyeView
+world2image	BirdsEyeView.py	/^    def world2image(self, X_world, Y_world, Z_world):$/;"	m	class:BirdsEyeView
+world2image_uvMat	BirdsEyeView.py	/^    def world2image_uvMat(self, uv_mat):$/;"	m	class:BirdsEyeView
